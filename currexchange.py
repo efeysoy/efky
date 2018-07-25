@@ -13,7 +13,7 @@
 # --
 # --==============================================================================
 import urllib2
-import cairo
+import json
 import subprocess
 import datetime
 from pprint import pprint
@@ -94,15 +94,14 @@ def efky_draw(dh):
                 proxy_support = urllib2.ProxyHandler({"https": https, "http": http})
                 opener = urllib2.build_opener(proxy_support)
                 urllib2.install_opener(opener)
-            url = "http://download.finance.yahoo.com/d/quotes.csv?s="+ curr + curr_from + "=X&f=sl1d1t1ba&e=.csv"
+            url = "http://free.currencyconverterapi.com/api/v5/convert?q="+curr+"_"+curr_from+"&compact=y"
             url = url.replace(" ", "%20")
             try:
                 data = urllib2.urlopen(url).read()
-            except URLError:
+            except urllib2.URLError:
                 return
-            data = data.split(",")
-            vals[curr] = data[1]
-            pprint(vals)
+            data = json.loads(data)
+            vals[curr] = data[curr+"_"+curr_from]["val"]
     else:
         counter = (counter + 1) % 600
     if vals is not None:
@@ -114,8 +113,8 @@ def efky_draw(dh):
         i = 0
         for curr in currs:
             # dh.set_font("Ubuntu", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+            dh.draw_text(0.20, 0.35 + i * 0.20, 0.15, "1 " + curr + "\t=\t" + str(round(vals[curr], 2)) + " " + curr_from, (0, 0, 0, .5))
             dh.draw_centered_text(0.5, 0.075, 0.2, title, (1, 1, 1, .5))
-            dh.draw_text(0.20, 0.35 + i * 0.20, 0.15, "1 " + curr + " = " + vals[curr] + " " + curr_from, (0, 0, 0, .5))
             i += 1
 
         # dh.draw_text(0.40, 0.15, 0.3, now, (.8, .8, .8, 1))

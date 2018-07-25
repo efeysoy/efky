@@ -1,0 +1,85 @@
+root:
+{
+	name:'root'
+	width:'500px'
+	height:'97.5%'
+	# if height of the screen is 800px then ratio of widget -> 1:4  w:h 
+	bgcolor:BBBFCCBB
+	#bgcolor:'RRGGBBAA'
+	x:'1680'
+	y:'0'
+	#position:top,left,bottom,right
+	refreshrate:500
+
+	#114:131
+	#Widths must be same
+	nodes:
+	[
+		{
+			name:'vertical'
+			nodes:
+			[
+                {
+                    name:'clock'
+                    margintop:'10px'
+                    #ratio:3,1
+                    #clock.py
+                }
+                {
+                    name:'weather'
+                    #ratio:2,1
+                    #calendar.py
+
+                }
+                {
+                    name:'calendar'
+                    #ratio:2,1
+                    #calendar.py
+
+                }
+				{
+					name:'horizontal'
+					nodes:
+					[
+						{
+							name:'downspeed'
+							#ratio:2,3
+							#downspeed.py
+
+						}
+						{
+						    name:'upspeed'
+						    #ratio:5,2
+						    #upspeed.py
+
+						}
+					]
+				}
+				{
+					name:'horizontal'
+					nodes:
+					[
+						{
+						    name:'cpuload'
+						    #ratio:2,1
+						    #calendar.py
+
+						}
+						{
+						    name:'memload'
+						    #ratio:2,1
+						    #calendar.py
+
+						}
+                    			]
+				}
+				{
+					name:'weekpercent'
+				}
+				{
+					name:'currexchange'
+				}
+			]
+		}
+	]
+}

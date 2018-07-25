@@ -65,8 +65,7 @@ def efky_init():
         if err != "":
             print("Error: " + err)
         https = https.strip() + ":" + out.strip()
-    print("HTTP: " + http)
-    print("HTTPS: " + https)
+
     global name
 
 
@@ -90,7 +89,7 @@ def efky_draw(dh):
         url = url.replace(" ", "%20")
         try:
             jsn = urllib2.urlopen(url).read()
-        except URLError:
+        except urllib2.URLError:
             return
         data = json.loads(jsn)
         data = data["query"]["results"]["channel"]

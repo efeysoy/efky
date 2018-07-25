@@ -1,0 +1,65 @@
+$root{
+	width:200px
+	height:100%
+	# if height of the screen is 800px then ratio of widget -> 1:4  w:h 
+	bg-color:#BBBFCCBB 
+	bg-color:RRGGBBAA
+	x:0
+	y:0
+	#position:top,left,bottom,right
+
+	#114:131
+	#Widths must be same
+	$vertical{
+		#6:5
+		$clock{
+			#ratio:3,1
+			#clock.py
+					
+		}
+		$calendar{
+			#ratio:2,1
+			#calendar.py
+
+		}
+		#19:6
+		#Heights must be equal
+		$horizontal{
+			#ratio:19,6
+			downspeed{
+				#ratio:2,3
+				#downspeed.py
+
+			}
+			
+			upspeed{
+				#ratio:5,2
+				#upspeed.py
+
+			}
+		}
+	}
+}
+
+#############################
+#
+#	efyk_draw(w,h,sr)
+#	
+#
+#	efyk_setvar(name, val)
+#
+#
+#
+#
+#	
+#############################
+#
+#	pyhelper.py
+#	
+#	efyk_draw(w,h,cr,module, imgcode)
+#
+#
+#	efyk_setvar(name, val, module)
+#
+#
+#	efyk_resetvar()

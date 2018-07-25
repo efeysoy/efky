@@ -47,7 +47,9 @@ def efky_draw(dh):
         elif vals[0] == "Memory Locked:":
             mem_used = long(vals[1].split()[0])
 
-    load = 100 * float(mem_used) / mem_total
+    load = 0
+    if mem_total != 0:
+        load = 100 * float(mem_used) / mem_total
 
     dh.set_line_width(20)
     text = str(int(load))

@@ -30,12 +30,12 @@ def expose(widget, event):
     cr.set_operator(cairo.OPERATOR_CLEAR)
     # Makes the mask fill the entire window
     cr.rectangle(0.0, 0.0, *widget.get_size())
-    # Deletes everything in the window (since the compositing operator is clear and mask fills the entire window
+    # Deletes everything in the window (since the composition operator is clear and mask fills the entire window
     cr.fill()
-    # Set the compositing operator back to the default
+    # Set the composition operator back to the default
     cr.set_operator(cairo.OPERATOR_OVER)
 
-    cr.set_source_rgba(0.2, 0.3, 0.4, .5)
+    cr.set_source_rgba(0.3, 0.3, 0.3, 0.5)
     cr.rectangle(0.0, 0.0, *widget.get_size())
     cr.fill()
 
@@ -59,6 +59,7 @@ def main(argc):
         height = int(cfg.root.height[:-2])
     elif len(cfg.root.height) > 1 and cfg.root.height[-1:] == "%":
         height = int(gtk.gdk.screen_get_default().get_height() * (float(cfg.root.height[:-1]) / 100))
+
     root.height = height
     root.width = width
     root.x = int(cfg.root.x)
@@ -69,6 +70,7 @@ def main(argc):
     win.set_keep_below(setting=1)  # keep window under other windows
 
     win.set_decorated(False)
+
     # Makes the window paintable, so we can draw directly on it
     win.set_app_paintable(True)
 
@@ -89,11 +91,12 @@ def main(argc):
     size = win.get_size()
     bitmap = gtk.gdk.Pixmap(None, size[0], size[1], 1)
     cr = bitmap.cairo_create()
-    cr.set_source_rgba(0.0,0.0,0.0,0.0)
-    cr.rectangle((0,0)+size)
+    cr.set_source_rgba(0.0, 0.0, 0.0, 0.0)
+    cr.rectangle((0, 0)+size)
     cr.fill()
 
-    win.input_shape_combine_mask(bitmap, 0, 0)
+    # To able to click behind the window
+    # win.input_shape_combine_mask(bitmap, 0, 0)
 
     win.show()
     gtk.main()
@@ -112,7 +115,7 @@ def readconfig():
     return cfg
 
 
-def __create_nodes(conf, node = None):
+def __create_nodes(conf, node=None):
     new_node = Node(conf.name)
     if node is not None:  # not root node, so must have a parent
         node.add_node(new_node)
@@ -135,7 +138,7 @@ class Node:
         self.height = 0
         self.padding = 0
         self.ratio = (0, 0)  # width, height ratio
-        self.non_rel_ratio = (0, 0) # ratios re calculated by other elements, this ratio will not be changed
+        self.non_rel_ratio = (0, 0)  # ratios re calculated by other elements, this ratio will not be changed
         self.name = module
         self.module = ""
         if module != "root" and module != "vertical" and module != "horizontal":
@@ -162,25 +165,24 @@ class Node:
             self.__nodes[0].__calculate_locations()
         elif self.name == "vertical":
             for i in range(len(self.__nodes)):
-                self.__nodes[i].x=tmp_x
-                self.__nodes[i].y=tmp_y
+                self.__nodes[i].x = tmp_x
+                self.__nodes[i].y = tmp_y
                 self.__nodes[i].__calculate_locations()
                 tmp_y += self.__nodes[i].height
         elif self.name == "horizontal":
             for i in range(len(self.__nodes)):
-                self.__nodes[i].x=tmp_x
-                self.__nodes[i].y=tmp_y
+                self.__nodes[i].x = tmp_x
+                self.__nodes[i].y = tmp_y
                 self.__nodes[i].__calculate_locations()
                 tmp_x += self.__nodes[i].width
         self.size_calculated = True
 
     def __calculate_sizes(self):
-        if self.name == "root": #!!!!!!!!!!! NOT WORKING IF HEIGHT MORE THAN SCREEN
-            if (float(self.__nodes[0].ratio[0]) / float(self.__nodes[0].ratio[1])) > self.width / self.height: # use width as equilizer
-                print(self.width)
+        if self.name == "root":     # !!!!!!!!!!! NOT WORKING IF HEIGHT MORE THAN SCREEN
+            if (float(self.__nodes[0].ratio[0]) / float(self.__nodes[0].ratio[1])) > float(self.width) / float(self.height):  # use width as equilizer
                 self.__nodes[0].width = self.width
                 self.__nodes[0].height = self.width * self.__nodes[0].ratio[1] / self.__nodes[0].ratio[0]
-            else:   # use width as equilizer
+            else:   # use width as equalizer
                 self.__nodes[0].height = self.height
                 self.__nodes[0].width = self.height * self.__nodes[0].ratio[0] / self.__nodes[0].ratio[1]
             self.__nodes[0].__calculate_sizes()
@@ -209,7 +211,7 @@ class Node:
 
             # calculate new ratios
             for i in range(len(self.__nodes)):
-                new_ratios.append( (self.__nodes[i].ratio[0], self.__nodes[i].ratio[1]) )
+                new_ratios.append((self.__nodes[i].ratio[0], self.__nodes[i].ratio[1]))
 
             for i in range(len(self.__nodes)):
                 for j in range(len(self.__nodes)):
@@ -219,7 +221,7 @@ class Node:
                             x = self.__nodes[i].ratio[0]  # * width for vertical
                         else:
                             x = self.__nodes[i].ratio[1]  # * height for horizontal
-                        new_ratios[j] = (new_ratios[j][0] * x ,new_ratios[j][1] * x)
+                        new_ratios[j] = (new_ratios[j][0] * x, new_ratios[j][1] * x)
 
             # set objects ratios by new ratios
             for i in range(len(self.__nodes)):
@@ -230,11 +232,11 @@ class Node:
             r_w = 0
             r_h = 0
             if self.name == "vertical":
-                r_w = self.__nodes[0].ratio[0] # widths are same for vertical
+                r_w = self.__nodes[0].ratio[0]  # widths are same for vertical
                 for i in range(len(self.__nodes)):
                     r_h += self.__nodes[i].ratio[1]
             elif self.name == "horizontal":
-                r_h = self.__nodes[0].ratio[1] # heights are same for horizontal
+                r_h = self.__nodes[0].ratio[1]  # heights are same for horizontal
                 for i in range(len(self.__nodes)):
                     r_w += self.__nodes[i].ratio[0]
 	    elif self.name == "root":
@@ -242,6 +244,7 @@ class Node:
                 r_h = self.__nodes[0].ratio[1]
 
             self.ratio = (r_w, r_h)
+
 	    print(self.name + ": " +  str(r_w) + " - " + str(r_h))
 
     def draw_all(self, cr):

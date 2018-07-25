@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-# https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='Istanbul')&format=json
-
-
-
 # --==============================================================================
 # --                            weather.py
 # --

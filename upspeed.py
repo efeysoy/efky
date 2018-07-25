@@ -10,8 +10,8 @@
 
 name = "downspeed"
 #dev = "wlx7cdd90821717"
-# dev = "eth0"
-dev = "wlp1s0"
+dev = "enp0s31f6"
+# dev = "wlp1s0"
 
 prev = 0
 val = [0, 0, 0, 0, 0]
